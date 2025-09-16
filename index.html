@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ONN STORE</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Montserrat', sans-serif; margin:0; padding:0; }
+
+    body {
+      background: linear-gradient(to bottom, #000000, #1a1a1a);
+      color: #fff;
+      padding-bottom: 6rem;
+    }
+
+    header {
+      padding: 2rem 1rem 1rem;
+      text-align: center;
+      background: #000;
+      position: relative;
+    }
+
+    header img {
+      height: 80px;
+      margin-bottom: 0.5rem;
+      animation: flutuar 3s ease-in-out infinite;
+    }
+
+    header h1 { color: #ff8000; font-size: 2rem; letter-spacing: 1px; }
+
+    header a.renovar-link {
+      color: #00e5ff;
+      text-decoration: none;
+      font-weight: bold;
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: color 0.3s;
+    }
+    header a.renovar-link:hover { color: #ff8000; }
+
+    /* Produtos */
+    .produtos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .produto {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 15px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s, opacity 1s ease;
+      box-shadow: 0 0 10px #ff800040;
+      opacity: 0;
+      transform: translateY(30px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .produto.visible { opacity: 1; transform: translateY(0); }
+
+    .produto:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 25px #ff8000aa, 0 0 40px #ff800040 inset;
+    }
+
+    .produto img { width: 100%; height: 200px; object-fit: cover; }
+
+    .produto-content { padding: 1rem; width: 100%; }
+
+    .produto h2 { font-size: 1.2rem; color: #ff9933; margin-bottom: 0.5rem; }
+    .produto p { font-size: 0.9rem; color: #ccc; line-height: 1.3; }
+
+    .produto a {
+      display: block;
+      background: #ff8000;
+      color: #000;
+      padding: 0.6rem 1.5rem;
+      border-radius: 8px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: 0.3s;
+      width: fit-content;
+      margin: 1rem auto 0;
+    }
+
+    .produto a:hover { background: #cc6600; }
+
+    /* Separador */
+    .separador-seg {
+      grid-column: 1 / -1;
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #ff8000;
+      padding: 0.8rem 0;
+      border-top: 2px solid #ff8000;
+      border-bottom: 2px solid #ff8000;
+      margin: 2rem 0 1rem;
+    }
+
+    /* Botão topo */
+    #topoBtn {
+      position: fixed; bottom: 90px; right: 20px;
+      background-color: #ff8000; color: #000;
+      border: none; padding: 12px 16px;
+      border-radius: 50%; font-size: 18px;
+      cursor: pointer; box-shadow: 0 0 10px #ff800080;
+      display: none; z-index: 999;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    #topoBtn:hover { background-color: #cc6600; transform: scale(1.1); }
+
+    /* WhatsApp */
+    .whatsapp-float { position: fixed; bottom: 20px; right: 20px; z-index: 999; }
+    .whatsapp-float a {
+      background-color: #25d366; color: white; border-radius: 50%;
+      padding: 16px; font-size: 24px;
+      text-decoration: none; display: flex;
+      align-items: center; justify-content: center;
+      box-shadow: 0 0 10px #25d366;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .whatsapp-float a:hover { background-color: #1ebd59; transform: scale(1.1); }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .produtos { grid-template-columns: 1fr; }
+      .produto img { height: 180px; }
+      header h1 { font-size: 1.6rem; }
+      header a.renovar-link { position: static; transform: none; margin-top: 1rem; display: inline-block; }
+    }
+
+    @keyframes flutuar { 0%,100%{transform:translateY(0);}50%{transform:translateY(-15px);} }
+
+    /* Carrossel */
+    .header-text { text-align: center; padding: 25px 15px 10px; font-size: 2.5rem; font-weight: bold; letter-spacing: 2px; color: #00e5ff; text-shadow: 0 0 10px #00e5ffaa; }
+    .carousel-container { position: relative; overflow: hidden; width: 100%; padding: 20px 0 40px; background: #1c1c1c; }
+    .carousel-track { display: flex; gap: 20px; transition: transform 0.7s ease-in-out; }
+    .carousel-slide { min-width: 100%; flex-shrink: 0; border-radius: 12px; overflow: hidden; height: 500px; }
+    .carousel-slide img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+    .carousel-button {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background-color: rgba(255,255,255,0.2); border: none; color: #fff;
+      font-size: 2.5rem; padding: 12px 18px; cursor: pointer; z-index:1; border-radius:6px;
+    }
+    .carousel-button:hover { background-color: rgba(255,255,255,0.5); color:#000; }
+    .carousel-button.prev { left: 15px; }
+    .carousel-button.next { right: 15px; }
+    @media(min-width:600px){.carousel-slide{min-width:48%;height:500px;}}
+    @media(min-width:1000px){.carousel-slide{min-width:32%;height:550px;}}
+
+    /* Renovação */
+    .renovacao-container {
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #ff800060;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      margin: 3rem auto;
+    }
+    .renovacao-container h2 { color: #ff8000; margin-bottom: 1rem; }
+    .renovacao-container input {
+      width: 100%; padding: 10px; border-radius: 8px; border: none; margin-bottom:1rem;
+      font-size:1rem; text-align:center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .renovacao-container input:focus { outline:none; box-shadow: 0 0 10px #ff8000; transform: scale(1.02); }
+    .renovacao-container button {
+      background: #ff8000; color: #000; font-weight:bold;
+      border:none; border-radius:8px; padding:12px 20px; cursor:pointer; transition:0.3s; font-size:1rem; width:100%;
+    }
+    .renovacao-container button:hover { background:#cc6600; transform: scale(1.02); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="https://i.postimg.cc/q7t5zKdG/logo2222.png" alt="Logo ONN STORE">
+    <h1>Seus Produtos Digitais</h1>
+    <a href="#renovacao" class="renovar-link">Renovar Usuário</a>
+  </header>
+
+  <div class="separador-seg">TODOS OS CANAIS LIBERADOS 📺</div>
+
+  <!-- Produtos -->
+  <div class="produtos">
+    <div class="produto">
+      <img src="https://i.postimg.cc/Fz030cp8/Chat-GPT-Image-17-04-2025-15-24.png" alt="Plano Básico">
+      <div class="produto-content">
+        <h2>TESTE GRATIS</h2>
+        <p>TODOS OS CANAIS LIBERADO</p>
+        <a href="https://wa.me/5551980323797?text=QUERO%20MEU%20TESTE%20GRATIS" target="_blank">Comprar</a>
+      </div>
+    </div>
+    <div class="produto">
+      <img src="https://i.postimg.cc/VkS5fXRR/Chat-GPT-Image-30-04-2025-11-19-35.png" alt="Plano Básico">
+      <div class="produto-content">
+        <h2>CANAIS LIBERADO R$ 15,00</h2>
+        <p>🔹 BÁSICO – 1 Conexão<br>Qualidade HD/SD</p>
+        <a href="https://wa.me/5551980323797?text=COMPREI%0A%0ABÁSICO%20R$15" target="_blank">Comprar</a>
+      </div>
+    </div>
+    <div class="produto">
+      <img src="https://i.postimg.cc/jj9g5M5Z/Chat-GPT-Image-30-04-2025-11-15-24.png" alt="Plano Intermediário">
+      <div class="produto-content">
+        <h2>CANAIS LIBERADO R$ 25,00</h2>
+        <p>🔹 INTERMEDIÁRIO – 2 Conexões<br>Qualidade FHD/HD/SD</p>
+        <a href="https://wa.me/5551980323797?text=COMPREI%0A%0AINTERMEDIÁRIO%20R$25" target="_blank">Comprar</a>
+      </div>
+    </div>
+    <div class="produto">
+      <img src="https://i.postimg.cc/L6snXBbZ/Chat-GPT-Image-30-04-2025-11-23-46.png" alt="Plano Avançado">
+      <div class="produto-content">
+        <h2>CANAIS LIBERADO R$ 30,00</h2>
+        <p>🔹 AVANÇADO – 2 Conexões<br>FHD/HD/SD/4K + Conteúdo adulto</p>
+        <a href="https://wa.me/5551980323797?text=COMPREI%0A%0AAVANÇADO%20R$30" target="_blank">Comprar</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Renovação -->
+  <div class="renovacao-container" id="renovacao">
+    <h2>Renovação de Usuário</h2>
+    <p>Digite seu usuário para solicitar renovação:</p>
+    <input type="text" id="usuario" placeholder="Seu usuário" required>
+    <button onclick="enviarWhatsApp()">Renovar Agora</button>
+  </div>
+
+
+  <!-- Botões fixos -->
+  <button id="topoBtn">↑</button>
+  <div class="whatsapp-float">
+    <a href="https://wa.me/5551980323797?text=oi%20quero%20tirar%20minha%20d%C3%BAvida%3F" target="_blank">💬</a>
+  </div>
+
+  <script>
+    // Animação produtos
+    const produtos = document.querySelectorAll('.produto');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          entry.target.style.transitionDelay = `${i*0.1}s`;
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    produtos.forEach(produto => observer.observe(produto));
+
+    // Botão topo
+    const topoBtn = document.getElementById("topoBtn");
+    window.onscroll = () => { topoBtn.style.display = window.scrollY > 200 ? "block" : "none"; };
+    topoBtn.onclick = () => window.scrollTo({top:0, behavior:'smooth'});
+
+    // Carrossel
+    const track = document.querySelector('.carousel-track');
+    const slides = document.querySelectorAll('.carousel-slide');
+    const prev = document.querySelector('.carousel-button.prev');
+    const next = document.querySelector('.carousel-button.next');
+    let index = 0;
+
+    function slidesPerView() {
+      if(window.innerWidth >= 1000) return 3;
+      if(window.innerWidth >= 600) return 2;
+      return 1;
+    }
+
+    function moveToSlide(idx) {
+      const slideWidth = slides[0].getBoundingClientRect().width + 20;
+      track.style.transform = `translateX(-${idx*slideWidth}px)`;
+    }
+
+    function nextSlide() {
+      const spv = slidesPerView();
+      index = (index + 1) % slides.length;
+      if(index > slides.length - spv) index = 0;
+      moveToSlide(index);
+    }
+
+    function prevSlide() {
+      const spv = slidesPerView();
+      index = (index - 1 + slides.length) % slides.length;
+      moveToSlide(index);
+    }
+
+    next.addEventListener('click', () => { nextSlide(); resetAuto(); });
+    prev.addEventListener('click', () => { prevSlide(); resetAuto(); });
+
+    window.addEventListener('resize', () => moveToSlide(index));
+
+    let auto = setInterval(nextSlide, 4000);
+    function resetAuto() { clearInterval(auto); auto = setInterval(nextSlide,4000); }
+
+    moveToSlide(index);
+
+    // Renovação via WhatsApp
+    function enviarWhatsApp() {
+      const usuario = document.getElementById("usuario").value.trim();
+      if(usuario===""){ alert("Por favor, digite seu usuário."); return; }
+      const numero = "5551980323797";
+      const mensagem = `Olá! Quero renovar meu usuário: ${usuario}`;
+      const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+      window.open(url,"_blank");
+    }
+  </script>
+</body>
+</html>
